@@ -4,91 +4,250 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hábitos de Estudio</title>
+  <title>Hábitos de Estudio | Study Bloom</title>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --morado: #7357e8;
+      --morado-oscuro: #5238bd;
+      --lila: #eee9ff;
+      --turquesa: #37cdb8;
+      --rosa: #ff8bb5;
+      --amarillo: #ffcf66;
+      --texto: #30294a;
+      --gris: #77738b;
+      --blanco: #ffffff;
+    }
+
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 24px 16px;
-      background: linear-gradient(135deg, #e8f4ff, #f5efff);
-      color: #26324a;
+      padding: 24px 14px 40px;
+      font-family: 'Poppins', Arial, sans-serif;
+      color: var(--texto);
+      background:
+        radial-gradient(circle at 8% 10%, #ffe2ef 0, transparent 25%),
+        radial-gradient(circle at 92% 25%, #d9fff5 0, transparent 27%),
+        linear-gradient(135deg, #f8f5ff, #f1faff 55%, #fff6f0);
+      min-height: 100vh;
     }
 
-    h2 {
-      color: #5146a5;
-      margin-top: 0;
+    .contenedor {
+      max-width: 850px;
+      margin: 0 auto;
     }
 
-    body > h2 {
-      text-align: center;
-      font-size: 28px;
-      margin: 12px 0 8px;
+    .portada {
+      position: relative;
+      overflow: hidden;
+      padding: 32px 28px;
+      border-radius: 28px;
+      color: white;
+      background: linear-gradient(125deg, #7357e8, #9a69ed 55%, #d17be8);
+      box-shadow: 0 15px 35px #7357e83a;
+      margin-bottom: 22px;
     }
 
-    body > h2::before {
-      content: "📚 ";
+    .portada::before,
+    .portada::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: #ffffff18;
+      pointer-events: none;
     }
 
-    #formulario {
-      background: #ffffff;
-      max-width: 650px;
-      width: 100%;
-      margin: 22px auto;
-      padding: 28px;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(60, 60, 120, 0.12);
-      border: 1px solid #e7e3fb;
+    .portada::before {
+      width: 190px;
+      height: 190px;
+      top: -95px;
+      right: -25px;
     }
 
-    label {
+    .portada::after {
+      width: 120px;
+      height: 120px;
+      bottom: -75px;
+      right: 130px;
+    }
+
+    .etiqueta {
       display: inline-block;
-      font-size: 15px;
-      font-weight: bold;
-      color: #3c4561;
-      margin-bottom: 7px;
+      padding: 7px 12px;
+      margin-bottom: 12px;
+      border: 1px solid #ffffff55;
+      border-radius: 30px;
+      background: #ffffff20;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
-    input:not([type="hidden"]) {
+    .portada h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(27px, 6vw, 39px);
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .portada p {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 12px 0 0;
+      color: #f8f4ff;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .decoracion {
+      position: absolute;
+      right: 28px;
+      bottom: 20px;
+      z-index: 1;
+      font-size: 54px;
+      transform: rotate(-10deg);
+      filter: drop-shadow(0 5px 5px #39237b35);
+    }
+
+    .tarjeta {
+      padding: 28px;
+      margin-bottom: 22px;
+      border: 1px solid #ffffff;
+      border-radius: 25px;
+      background: #ffffffed;
+      box-shadow: 0 10px 30px #40316b0c;
+    }
+
+    .titulo-seccion {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 8px;
+    }
+
+    .icono-seccion {
+      display: grid;
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--lila);
+      font-size: 24px;
+    }
+
+    .titulo-seccion h2 {
+      margin: 0;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .subtitulo {
+      margin: 0 0 24px;
+      color: var(--gris);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .rejilla {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .campo {
+      min-width: 0;
+    }
+
+    .campo label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .campo input {
+      display: block;
       width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #d6d9e8;
-      border-radius: 10px;
-      font-size: 16px;
-      background: #fafbff;
-      color: #26324a;
+      min-width: 0;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1.5px solid #e7e2f2;
+      border-radius: 13px;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fcfbff;
+      color: var(--texto);
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     }
 
-    input:focus {
-      border-color: #8275df;
-      box-shadow: 0 0 0 3px rgba(130, 117, 223, 0.15);
-      background: #ffffff;
+    .campo input::placeholder {
+      color: #aaa4bb;
     }
 
-    input::placeholder {
-      color: #9299ad;
+    .campo input:focus {
+      border-color: var(--morado);
+      background: white;
+      box-shadow: 0 0 0 4px #7357e817;
+    }
+
+    .campo input:valid:not(:placeholder-shown) {
+      background-color: #fbfffe;
+    }
+
+    .campo-completo {
+      grid-column: 1 / -1;
+    }
+
+    .nota {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 13px 15px;
+      margin-top: 22px;
+      border-radius: 14px;
+      background: #fff7df;
+      color: #795a19;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .acciones {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
+      margin-top: 24px;
     }
 
     button {
+      min-height: 46px;
+      padding: 12px 15px;
       border: none;
-      border-radius: 10px;
-      padding: 13px 17px;
-      margin: 5px 4px 5px 0;
-      font-size: 15px;
-      font-weight: bold;
+      border-radius: 13px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
-      transition: transform 0.15s, opacity 0.2s;
-      touch-action: manipulation;
+      transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
     }
 
     button:hover:not(:disabled) {
       transform: translateY(-2px);
+      box-shadow: 0 7px 16px #30294a18;
     }
 
     button:active:not(:disabled) {
@@ -96,248 +255,403 @@
     }
 
     button:disabled {
-      opacity: 0.45;
+      opacity: 0.4;
       cursor: not-allowed;
     }
 
     #btnRegistrar {
-      background: #6558c7;
       color: white;
+      background: linear-gradient(120deg, #7357e8, #9871ef);
     }
 
     #btnConsultar {
-      background: #dcecff;
-      color: #285a91;
+      color: #176c60;
+      background: #d8fbf3;
     }
 
     #btnModificar {
+      color: #79551a;
       background: #fff0c9;
-      color: #805b00;
     }
 
     #btnEliminar {
-      background: #ffe1e5;
-      color: #a52d48;
+      color: #a52e58;
+      background: #ffe1eb;
     }
 
     #estado {
-      max-width: 650px;
-      margin: 15px auto;
-      padding: 12px 15px;
-      color: #5146a5;
-      font-weight: bold;
-      text-align: center;
+      display: none;
+      padding: 14px 17px;
+      margin: 0 0 22px;
+      border: 1px solid #d9d0ff;
+      border-radius: 14px;
+      background: #f1edff;
+      color: #5238bd;
+      font-size: 13px;
+      font-weight: 600;
       overflow-wrap: anywhere;
+    }
+
+    #estado:not(:empty) {
+      display: block;
     }
 
     #seccionTabla {
       display: none;
-      max-width: 1200px;
-      width: 100%;
-      margin: 25px auto;
-      padding: 22px;
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 8px 25px rgba(60, 60, 120, 0.12);
+      padding: 24px;
+      border: 1px solid white;
+      border-radius: 25px;
+      background: #ffffffed;
+      box-shadow: 0 10px 30px #40316b0c;
     }
 
-    #seccionTabla h2 {
-      margin-bottom: 18px;
+    .encabezado-tabla {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .encabezado-tabla h2 {
+      margin: 0;
+      font-size: 21px;
     }
 
     #btnCerrar {
+      min-height: 38px;
+      padding: 9px 12px;
+      color: #6b4ed2;
       background: #eee9ff;
-      color: #5146a5;
+      font-size: 11px;
     }
 
     #buscador {
-      max-width: 400px;
-      margin: 8px 0 18px;
+      display: block;
+      width: 100%;
+      min-height: 46px;
+      padding: 12px 15px;
+      margin-bottom: 16px;
+      border: 1.5px solid #e7e2f2;
+      border-radius: 13px;
+      outline: none;
+      background: #fcfbff;
+      font-family: inherit;
+      font-size: 13px;
     }
 
-    /* Permite deslizar la tabla en celulares */
-    #seccionTabla {
+    #buscador:focus {
+      border-color: var(--morado);
+      box-shadow: 0 0 0 4px #7357e817;
+    }
+
+    .tabla-scroll {
+      width: 100%;
       overflow-x: auto;
+      border: 1px solid #ece7f5;
+      border-radius: 13px;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
-      border-collapse: collapse;
       width: 100%;
-      min-width: 950px;
-      margin-top: 10px;
-      font-size: 14px;
-      background: white;
-    }
-
-    th, td {
-      border: 1px solid #e1e3ef;
-      padding: 11px 12px;
+      min-width: 1000px;
+      border-collapse: collapse;
+      font-size: 12px;
       text-align: left;
     }
 
     th {
-      background: #eeeaff;
-      color: #5146a5;
+      padding: 14px 12px;
+      background: #eee9ff;
+      color: #5238bd;
+      font-weight: 700;
       white-space: nowrap;
     }
 
+    td {
+      padding: 12px;
+      border-top: 1px solid #f0edf6;
+      color: #514b65;
+      vertical-align: middle;
+    }
+
     tbody tr:nth-child(even) {
-      background: #faf9ff;
+      background: #fcfaff;
     }
 
     tbody tr:hover {
-      background: #f0edff;
+      background: #f3efff;
     }
 
     td button {
-      font-size: 12px;
-      padding: 9px 10px;
+      min-height: 35px;
+      padding: 8px 10px;
+      margin: 3px;
+      font-size: 11px;
       white-space: nowrap;
     }
 
     td button:first-child {
-      background: #dcecff;
-      color: #285a91;
+      color: #5238bd;
+      background: #eee9ff;
     }
 
     td button:last-child {
-      background: #ffe1e5;
-      color: #a52d48;
+      color: #a52e58;
+      background: #ffe1eb;
     }
 
-    /* Ajustes para celulares */
+    .pie {
+      padding: 10px 8px;
+      color: #8b83a0;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
     @media (max-width: 600px) {
       body {
-        padding: 16px 10px;
+        padding: 13px 10px 25px;
       }
 
-      body > h2 {
-        font-size: 24px;
-        margin-top: 8px;
+      .portada {
+        padding: 26px 21px;
+        border-radius: 23px;
       }
 
-      #formulario {
+      .portada p {
+        max-width: 85%;
+        font-size: 12px;
+      }
+
+      .decoracion {
+        right: 14px;
+        bottom: 18px;
+        font-size: 37px;
+      }
+
+      .tarjeta {
         padding: 20px 16px;
-        margin: 18px auto;
-        border-radius: 16px;
+        border-radius: 21px;
       }
 
-      label {
-        font-size: 14px;
+      .titulo-seccion h2 {
+        font-size: 18px;
       }
 
-      input:not([type="hidden"]) {
-        padding: 14px 12px;
-        font-size: 16px;
-      }
-
-      #formulario button {
-        width: 100%;
-        margin: 5px 0;
-        padding: 14px;
-        font-size: 15px;
-      }
-
-      #estado {
-        padding: 10px;
-      }
-
-      #seccionTabla {
-        padding: 16px 12px;
-        border-radius: 14px;
-      }
-
-      #seccionTabla h2 {
+      .icono-seccion {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
         font-size: 21px;
       }
 
+      .rejilla {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .campo-completo {
+        grid-column: auto;
+      }
+
+      .campo input {
+        min-height: 49px;
+        font-size: 16px;
+      }
+
+      .acciones {
+        gap: 9px;
+      }
+
+      button {
+        padding: 12px 9px;
+        font-size: 12px;
+      }
+
+      #seccionTabla {
+        padding: 17px 12px;
+        border-radius: 21px;
+      }
+
+      .encabezado-tabla {
+        align-items: flex-start;
+      }
+
+      .encabezado-tabla h2 {
+        font-size: 18px;
+      }
+
       #btnCerrar {
-        width: 100%;
+        flex-shrink: 0;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .acciones {
+        grid-template-columns: 1fr;
       }
 
-      #buscador {
-        max-width: none;
+      .portada p {
+        max-width: 100%;
       }
 
-      table {
-        min-width: 950px;
+      .decoracion {
+        display: none;
       }
     }
   </style>
 </head>
 
 <body>
+  <main class="contenedor">
 
-  <h2>Hábitos de Estudio</h2>
+    <header class="portada">
+      <span class="etiqueta">✦ MI ESPACIO ESCOLAR</span>
+      <h1>Study Bloom 🌷</h1>
+      <p>
+        Pequeños hábitos, grandes logros. Registra tu rutina,
+        descubre cómo estudias y sigue creciendo cada día.
+      </p>
+      <span class="decoracion" aria-hidden="true">📚</span>
+    </header>
 
-  <form id="formulario">
-    <input type="hidden" id="id">
+    <section class="tarjeta">
+      <div class="titulo-seccion">
+        <div class="icono-seccion">📝</div>
+        <h2>Mi perfil de estudiante</h2>
+      </div>
 
-    <label for="nombre">Nombre:</label><br>
-    <input type="text" id="nombre" required><br><br>
+      <p class="subtitulo">
+        Cuéntanos un poquito sobre ti y tus hábitos de estudio.
+        Completa todos los campos para guardar tu registro.
+      </p>
 
-    <label for="edad">Edad:</label><br>
-    <input type="number" id="edad" required min="1" max="120"><br><br>
+      <form id="formulario">
+        <input type="hidden" id="id">
 
-    <label for="grado">Grado escolar:</label><br>
-    <input type="text" id="grado" required><br><br>
+        <div class="rejilla">
+          <div class="campo">
+            <label for="nombre">👤 Nombre completo</label>
+            <input type="text" id="nombre" placeholder="Escribe tu nombre" required>
+          </div>
 
-    <label for="estudio">Horas de estudio al día:</label><br>
-    <input type="number" id="estudio" required min="0" max="24" step="0.5"><br><br>
+          <div class="campo">
+            <label for="edad">🎂 Edad</label>
+            <input type="number" id="edad" placeholder="Tu edad" required min="1" max="120">
+          </div>
 
-    <label for="materia">Materia favorita:</label><br>
-    <input type="text" id="materia" required><br><br>
+          <div class="campo">
+            <label for="grado">🎓 Grado escolar</label>
+            <input type="text" id="grado" placeholder="Ej. 3.º de preparatoria" required>
+          </div>
 
-    <label for="lugar">Lugar donde estudias:</label><br>
-    <input type="text" id="lugar" required><br><br>
+          <div class="campo">
+            <label for="estudio">⏰ Horas de estudio al día</label>
+            <input type="number" id="estudio" placeholder="Ej. 2.5" required min="0" max="24" step="0.5">
+          </div>
 
-    <label for="tecno">¿Utilizas tecnología al estudiar?</label><br>
-    <input type="text" id="tecno" required><br><br>
+          <div class="campo">
+            <label for="materia">💡 Materia favorita</label>
+            <input type="text" id="materia" placeholder="¿Qué materia te gusta?" required>
+          </div>
 
-    <label for="sueño">Horas de sueño al día:</label><br>
-    <input type="number" id="sueño" required min="0" max="24" step="0.5"><br><br>
+          <div class="campo">
+            <label for="lugar">🏡 Lugar donde estudias</label>
+            <input type="text" id="lugar" placeholder="Ej. En mi habitación" required>
+          </div>
 
-    <label for="promedio">Promedio escolar (0 a 10):</label><br>
-    <input type="number" id="promedio" required min="0" max="10" step="0.1"><br><br>
+          <div class="campo campo-completo">
+            <label for="tecno">💻 ¿Utilizas tecnología al estudiar?</label>
+            <input type="text" id="tecno" placeholder="Ej. Sí, uso mi computadora y el celular" required>
+          </div>
 
-    <label for="satisfaccion">Satisfacción con tus hábitos de estudio (1 a 5):</label><br>
-    <input type="number" id="satisfaccion" required min="1" max="5"><br><br>
+          <div class="campo">
+            <label for="sueño">🌙 Horas de sueño al día</label>
+            <input type="number" id="sueño" placeholder="Ej. 8" required min="0" max="24" step="0.5">
+          </div>
 
-    <button type="button" id="btnRegistrar">Registrar</button>
-    <button type="button" id="btnConsultar">Consultar</button>
-    <button type="button" id="btnModificar">Modificar</button>
-    <button type="button" id="btnEliminar">Eliminar</button>
-  </form>
+          <div class="campo">
+            <label for="promedio">⭐ Promedio escolar (0 a 10)</label>
+            <input type="number" id="promedio" placeholder="Ej. 9.2" required min="0" max="10" step="0.1">
+          </div>
 
-  <p id="estado"></p>
+          <div class="campo campo-completo">
+            <label for="satisfaccion">🌈 ¿Qué tan satisfecho estás con tus hábitos? (1 a 5)</label>
+            <input type="number" id="satisfaccion" placeholder="1 = poco, 5 = mucho" required min="1" max="5">
+          </div>
+        </div>
 
-  <div id="seccionTabla">
-    <h2>Registros</h2>
-    <button type="button" id="btnCerrar">Cerrar tabla</button>
-    <br><br>
+        <div class="nota">
+          <span>✨</span>
+          <span>
+            <strong>¡Recuerda!</strong> No necesitas ser perfecto.
+            Conocer tus hábitos es el primer paso para mejorarlos.
+          </span>
+        </div>
 
-    <input type="text" id="buscador" placeholder="Buscar por nombre...">
+        <div class="acciones">
+          <button type="button" id="btnRegistrar">✨ Registrar</button>
+          <button type="button" id="btnConsultar">📋 Consultar registros</button>
+          <button type="button" id="btnModificar">✏️ Modificar</button>
+          <button type="button" id="btnEliminar">🗑️ Eliminar</button>
+        </div>
+      </form>
+    </section>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Nombre</th>
-          <th>Edad</th>
-          <th>Grado escolar</th>
-          <th>Horas de estudio</th>
-          <th>Materia favorita</th>
-          <th>Lugar de estudio</th>
-          <th>Uso de tecnología</th>
-          <th>Horas de sueño</th>
-          <th>Promedio</th>
-          <th>Satisfacción</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="tabla"></tbody>
-    </table>
-  </div>
+    <p id="estado" role="status" aria-live="polite"></p>
+
+    <section id="seccionTabla">
+      <div class="encabezado-tabla">
+        <div class="titulo-seccion">
+          <div class="icono-seccion">📚</div>
+          <h2>Mis registros</h2>
+        </div>
+        <button type="button" id="btnCerrar">✕ Cerrar</button>
+      </div>
+
+      <p class="subtitulo">
+        Consulta tus registros. Puedes elegir uno para modificarlo o eliminarlo.
+      </p>
+
+      <input
+        type="text"
+        id="buscador"
+        placeholder="🔎 Buscar por nombre..."
+        aria-label="Buscar registros por nombre"
+      >
+
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Nombre</th>
+              <th>Edad</th>
+              <th>Grado escolar</th>
+              <th>Horas de estudio</th>
+              <th>Materia favorita</th>
+              <th>Lugar de estudio</th>
+              <th>Uso de tecnología</th>
+              <th>Horas de sueño</th>
+              <th>Promedio</th>
+              <th>Satisfacción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="pie">
+      Hecho con 💜 para aprender, organizarse y crecer.
+      <br>
+      STUDY BLOOM · HÁBITOS DE ESTUDIO
+    </footer>
+
+  </main>
 
   <script>
     var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyo-VP7qnM-EYh23Gd7N8Bl6kavCtz_U2zQm-7QjO_yUoWpqADJlDLWcIeMsxwZeQLz/exec";
@@ -431,6 +745,7 @@
       tabla.innerHTML = "";
 
       registros.forEach(function (reg) {
+        // Mostrar los nombres que comienzan con lo escrito
         if (!String(reg.nombre || "").toLowerCase().startsWith(filtro)) return;
 
         var tr = document.createElement("tr");
