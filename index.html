@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Captura de Datos</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #999; padding: 6px 12px; }
+    th { background: #eee; }
+    #seccionTabla { display: none; }
+  </style>
+</head>
+<body>
+
+  <h2>Hábitos de Estudio</h2>
+
+  <form id="formulario">
+    <input type="hidden" id="id">
+
+    <label for="nombre">Nombre:</label><br>
+    <input type="text" id="nombre" required><br><br>
+
+    <label for="edad">Edad:</label><br>
+    <input type="number" id="edad" required min="1" max="120"><br><br>
+
+    <label for="grado">Grado escolar:</label><br>
+    <input type="text" id="grado" required><br><br>
+
+    <label for="estudio">Horas de estudio al día:</label><br>
+    <input type="number" id="estudio" required min="0" max="24" step="0.5"><br><br>
+
+    <label for="materia">Materia favorita:</label><br>
+    <input type="text" id="materia" required><br><br>
+
+    <label for="lugar">Lugar donde estudias:</label><br>
+    <input type="text" id="lugar" required><br><br>
+
+    <label for="tecno">¿Utilizas tecnología al estudiar?</label><br>
+    <input type="text" id="tecno" required><br><br>
+
+    <label for="sueño">Horas de sueño al día:</label><br>
+    <input type="number" id="sueño" required min="0" max="24" step="0.5"><br><br>
+
+    <label for="promedio">Promedio escolar (0 a 10):</label><br>
+    <input type="number" id="promedio" required min="0" max="10" step="0.1"><br><br>
+
+    <label for="satisfaccion">Satisfacción con tus hábitos de estudio (1 a 5):</label><br>
+    <input type="number" id="satisfaccion" required min="1" max="5"><br><br>
+
+    <button type="button" id="btnRegistrar">Registrar</button>
+    <button type="button" id="btnConsultar">Consultar</button>
+    <button type="button" id="btnModificar">Modificar</button>
+    <button type="button" id="btnEliminar">Eliminar</button>
+  </form>
+
+  <p id="estado"></p>
+
+  <div id="seccionTabla">
+    <h2>Registros</h2>
+    <button type="button" id="btnCerrar">Cerrar tabla</button>
+    <br><br>
+
+    <input type="text" id="buscador" placeholder="Buscar por nombre...">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Nombre</th>
+          <th>Edad</th>
+          <th>Grado escolar</th>
+          <th>Horas de estudio</th>
+          <th>Materia favorita</th>
+          <th>Lugar de estudio</th>
+          <th>Uso de tecnología</th>
+          <th>Horas de sueño</th>
+          <th>Promedio</th>
+          <th>Satisfacción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla"></tbody>
+    </table>
+  </div>
+
+  <script>
+    var URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyo-VP7qnM-EYh23Gd7N8Bl6kavCtz_U2zQm-7QjO_yUoWpqADJlDLWcIeMsxwZeQLz/exec";
+
+    var registros = [];
+    var tablaVisible = false;
+
+    // Enviar datos al script
+    function enviar(datos) {
+      return fetch(URL_SCRIPT, {
+        method: "POST",
+        body: new URLSearchParams(datos)
+      }).then(function (r) {
+        return r.json();
+      });
+    }
+
+    // Activar o desactivar botones según el estado
+    function actualizarBotones() {
+      var hayRegistro = document.getElementById("id").value !== "";
+
+      document.getElementById("btnRegistrar").disabled = hayRegistro;
+      document.getElementById("btnModificar").disabled = !hayRegistro;
+      document.getElementById("btnEliminar").disabled = !hayRegistro;
+    }
+
+    function limpiarFormulario() {
+      document.getElementById("formulario").reset();
+      document.getElementById("id").value = "";
+      actualizarBotones();
+    }
+
+    // Obtener los diez campos del formulario
+    function obtenerDatos() {
+      return {
+        nombre: document.getElementById("nombre").value,
+        edad: document.getElementById("edad").value,
+        grado: document.getElementById("grado").value,
+        estudio: document.getElementById("estudio").value,
+        materia: document.getElementById("materia").value,
+        lugar: document.getElementById("lugar").value,
+        tecno: document.getElementById("tecno").value,
+        sueño: document.getElementById("sueño").value,
+        promedio: document.getElementById("promedio").value,
+        satisfaccion: document.getElementById("satisfaccion").value
+      };
+    }
+
+    // REGISTRAR
+    document.getElementById("btnRegistrar").onclick = function () {
+      if (!document.getElementById("formulario").reportValidity()) return;
+
+      document.getElementById("estado").textContent = "Guardando...";
+
+      enviar({
+        accion: "guardar",
+        ...obtenerDatos()
+      }).then(function (respuesta) {
+        terminarAccion(respuesta, "¡Registro guardado!");
+      });
+    };
+
+    // CONSULTAR
+    document.getElementById("btnConsultar").onclick = function () {
+      document.getElementById("estado").textContent = "Consultando...";
+      tablaVisible = true;
+      document.getElementById("seccionTabla").style.display = "block";
+
+      cargarRegistros(function () {
+        document.getElementById("estado").textContent = "";
+      });
+    };
+
+    function cargarRegistros(alTerminar) {
+      fetch(URL_SCRIPT)
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (datos) {
+          registros = datos;
+          mostrarTabla();
+
+          if (alTerminar) alTerminar();
+        });
+    }
+
+    function mostrarTabla() {
+      var filtro = document.getElementById("buscador").value.trim().toLowerCase();
+      var tabla = document.getElementById("tabla");
+
+      tabla.innerHTML = "";
+
+      registros.forEach(function (reg) {
+        // Mostrar los nombres que comienzan con lo escrito
+        if (!String(reg.nombre || "").toLowerCase().startsWith(filtro)) return;
+
+        var tr = document.createElement("tr");
+
+        agregarCelda(tr, reg.fecha ? new Date(reg.fecha).toLocaleString() : "");
+        agregarCelda(tr, reg.nombre);
+        agregarCelda(tr, reg.edad);
+        agregarCelda(tr, reg.grado);
+        agregarCelda(tr, reg.estudio);
+        agregarCelda(tr, reg.materia);
+        agregarCelda(tr, reg.lugar);
+        agregarCelda(tr, reg.tecno);
+        agregarCelda(tr, reg.sueño);
+        agregarCelda(tr, reg.promedio);
+        agregarCelda(tr, reg.satisfaccion);
+
+        var td = document.createElement("td");
+
+        var btnModificarFila = document.createElement("button");
+        btnModificarFila.textContent = "Modificar registro";
+        btnModificarFila.onclick = function () {
+          cargarEnFormulario(reg);
+        };
+
+        var btnEliminarFila = document.createElement("button");
+        btnEliminarFila.textContent = "Eliminar";
+        btnEliminarFila.onclick = function () {
+          eliminar(reg.id);
+        };
+
+        td.appendChild(btnModificarFila);
+        td.appendChild(btnEliminarFila);
+        tr.appendChild(td);
+        tabla.appendChild(tr);
+      });
+    }
+
+    function agregarCelda(fila, texto) {
+      var td = document.createElement("td");
+      td.textContent = texto == null ? "" : texto;
+      fila.appendChild(td);
+    }
+
+    document.getElementById("buscador").oninput = mostrarTabla;
+
+    // CERRAR TABLA
+    document.getElementById("btnCerrar").onclick = function () {
+      tablaVisible = false;
+      document.getElementById("seccionTabla").style.display = "none";
+      document.getElementById("buscador").value = "";
+      document.getElementById("tabla").innerHTML = "";
+    };
+
+    // Pasar el registro seleccionado al formulario
+    function cargarEnFormulario(reg) {
+      document.getElementById("id").value = reg.id;
+
+      document.getElementById("nombre").value = reg.nombre || "";
+      document.getElementById("edad").value = reg.edad || "";
+      document.getElementById("grado").value = reg.grado || "";
+      document.getElementById("estudio").value = reg.estudio || "";
+      document.getElementById("materia").value = reg.materia || "";
+      document.getElementById("lugar").value = reg.lugar || "";
+      document.getElementById("tecno").value = reg.tecno || "";
+      document.getElementById("sueño").value = reg.sueño || "";
+      document.getElementById("promedio").value = reg.promedio || "";
+      document.getElementById("satisfaccion").value = reg.satisfaccion || "";
+
+      document.getElementById("estado").textContent =
+        "Modificando registro: cambia los datos y presiona Modificar";
+
+      actualizarBotones();
+
+      window.scrollTo(0, 0);
+      document.getElementById("nombre").focus();
+    }
+
+    // MODIFICAR
+    document.getElementById("btnModificar").onclick = function () {
+      var id = document.getElementById("id").value;
+
+      if (id === "") {
+        alert("Primero elige un registro con el botón 'Modificar registro'");
+        return;
+      }
+
+      if (!document.getElementById("formulario").reportValidity()) return;
+
+      document.getElementById("estado").textContent = "Modificando...";
+
+      enviar({
+        accion: "editar",
+        id: id,
+        ...obtenerDatos()
+      }).then(function (respuesta) {
+        terminarAccion(respuesta, "¡Registro modificado!");
+      });
+    };
+
+    // ELIMINAR
+    document.getElementById("btnEliminar").onclick = function () {
+      eliminar(document.getElementById("id").value);
+    };
+
+    function eliminar(id) {
+      if (!id) {
+        alert("Primero elige un registro para eliminar");
+        return;
+      }
+
+      if (!confirm("¿Seguro que quieres eliminar este registro?")) return;
+
+      document.getElementById("estado").textContent = "Eliminando...";
+
+      enviar({
+        accion: "eliminar",
+        id: id
+      }).then(function (respuesta) {
+        terminarAccion(respuesta, "Registro eliminado");
+      });
+    }
+
+    // Mensaje al terminar cualquier acción
+    function terminarAccion(respuesta, mensajeOk) {
+      document.getElementById("estado").textContent =
+        respuesta.ok ? mensajeOk : "Error: " + respuesta.mensaje;
+
+      limpiarFormulario();
+
+      if (tablaVisible) cargarRegistros();
+    }
+
+    actualizarBotones();
+  </script>
+
+</body>
+</html>
